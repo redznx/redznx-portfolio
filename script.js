@@ -1,6 +1,4 @@
-// ==============================
-// NAVBAR AO ROLAR
-// ==============================
+
 
 const header = document.querySelector("header");
 
@@ -14,9 +12,7 @@ window.addEventListener("scroll", () => {
 
 });
 
-// ==============================
-// REVELAR ELEMENTOS
-// ==============================
+
 
 const observer = new IntersectionObserver((entries)=>{
 
@@ -40,9 +36,7 @@ document.querySelectorAll(".fade-up,.fade-left,.fade-right").forEach(el=>{
 
 });
 
-// ==============================
-// DESTACAR MENU
-// ==============================
+
 
 const sections = document.querySelectorAll("section");
 const navLinks = document.querySelectorAll("nav a");
@@ -77,9 +71,6 @@ window.addEventListener("scroll",()=>{
 
 });
 
-// ==============================
-// SCROLL SUAVE
-// ==============================
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
 
@@ -97,9 +88,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor=>{
 
 });
 
-// ==============================
-// EFEITO NOS CARDS
-// ==============================
+
 
 const cards=document.querySelectorAll(".card");
 
@@ -128,9 +117,7 @@ cards.forEach(card=>{
 
 });
 
-// ==============================
-// ANIMAÇÃO DAS BARRAS
-// ==============================
+
 
 const bars=document.querySelectorAll(".fill");
 
@@ -180,9 +167,7 @@ window.addEventListener("scroll",()=>{
 
 });
 
-// ==============================
-// EFEITO DIGITAÇÃO
-// ==============================
+
 
 const title=document.querySelector(".hero-text h1");
 
@@ -212,9 +197,6 @@ window.addEventListener("load",()=>{
 
 });
 
-// ==============================
-// PARALLAX DA IMAGEM
-// ==============================
 
 const image=document.querySelector(".hero-image img");
 
@@ -228,9 +210,7 @@ window.addEventListener("mousemove",(e)=>{
 
 });
 
-// ==============================
-// ANO AUTOMÁTICO
-// ==============================
+
 
 const footer=document.querySelector("footer p");
 
