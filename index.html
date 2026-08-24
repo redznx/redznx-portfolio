@@ -1,337 +1,941 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfólio — Editor de Vídeo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
 
-    <title>Bruno Carvalho | Video Editor</title>
+/* ============================================================
+   TOKENS — mude as cores/fontes do site inteiro aqui
+   ============================================================ */
+:root{
+  --bg:            #0b0a10;
+  --bg-soft:       #131120;
+  --surface:       #17142a;
+  --surface-2:     #1d1833;
+  --purple-deep:   #3b1a78;
+  --purple:        #7c3aed;
+  --purple-bright: #a78bfa;
+  --purple-line:   #4c2a8f;
+  --white:         #f7f5fb;
+  --muted:         #9992ad;
+  --font-display:  'Unbounded', sans-serif;
+  --font-body:     'Manrope', sans-serif;
+  --radius:        18px;
+  --edge:          1px solid rgba(167,139,250,0.18);
+}
 
-    <meta name="description" content="Portfólio redznx - Editor de Vídeo especializado em YouTube, Shorts e TikTok.">
+*{ box-sizing:border-box; margin:0; padding:0; }
 
-    <link rel="stylesheet" href="style.css">
+html{ scroll-behavior:smooth; }
 
-   
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+}
 
-   
-    <script src="https://kit.fontawesome.com/yourkit.js" crossorigin="anonymous"></script>
+body::before{
+  /* textura de grão sutil, remete a filme/edição */
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:999;
+  opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
 
+::selection{ background:var(--purple); color:var(--white); }
+
+a{ color:inherit; text-decoration:none; }
+
+.eyebrow{
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:.72rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:var(--purple-bright);
+}
+
+.section{
+  padding:min(14vw,120px) min(7vw,64px);
+  position:relative;
+}
+
+.section-head{
+  margin-bottom:48px;
+  max-width:640px;
+}
+
+.section-head h2{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:clamp(1.8rem,4vw,2.8rem);
+  margin-top:10px;
+  line-height:1.1;
+}
+
+.section-head p{
+  color:var(--muted);
+  margin-top:14px;
+  font-size:1rem;
+  line-height:1.6;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+nav{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:22px min(7vw,64px);
+  backdrop-filter:blur(10px);
+  background:linear-gradient(to bottom, rgba(11,10,16,.85), transparent);
+}
+
+nav .logo{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:1.05rem;
+  letter-spacing:.02em;
+}
+
+nav .logo span{ color:var(--purple-bright); }
+
+nav ul{
+  list-style:none;
+  display:flex;
+  gap:34px;
+}
+
+nav ul a{
+  font-size:.85rem;
+  font-weight:600;
+  color:var(--muted);
+  transition:color .25s ease;
+}
+
+nav ul a:hover{ color:var(--white); }
+
+.nav-toggle{ display:none; }
+
+/* ============================================================
+   1) HERO — nome e o que eu faço
+   ============================================================ */
+.hero{
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:0 min(7vw,64px);
+  position:relative;
+}
+
+.hero-glow{
+  position:absolute;
+  top:-20%; right:-10%;
+  width:60vw; height:60vw;
+  max-width:800px; max-height:800px;
+  background:radial-gradient(circle, rgba(124,58,237,.35), transparent 70%);
+  filter:blur(40px);
+  pointer-events:none;
+  animation:drift 14s ease-in-out infinite alternate;
+}
+
+@keyframes drift{
+  from{ transform:translate(0,0) scale(1); }
+  to{ transform:translate(-6%,8%) scale(1.08); }
+}
+
+.hero-eyebrow{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:22px;
+}
+
+.hero-eyebrow .dot{
+  width:8px; height:8px; border-radius:50%;
+  background:var(--purple-bright);
+  box-shadow:0 0 12px var(--purple-bright);
+  animation:pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+  0%,100%{ opacity:1; }
+  50%{ opacity:.35; }
+}
+
+.hero h1{
+  font-family:var(--font-display);
+  font-weight:900;
+  font-size:clamp(2.6rem,9vw,6.4rem);
+  line-height:.98;
+  letter-spacing:-.01em;
+}
+
+.hero h1 em{
+  font-style:normal;
+  background:linear-gradient(100deg, var(--purple-bright), var(--purple));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.hero-role{
+  margin-top:26px;
+  font-size:clamp(1.05rem,2.2vw,1.4rem);
+  color:var(--muted);
+  max-width:560px;
+  line-height:1.55;
+}
+
+.hero-role strong{ color:var(--white); font-weight:700; }
+
+.hero-actions{
+  margin-top:42px;
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:.9rem;
+  padding:15px 28px;
+  border-radius:100px;
+  border:var(--edge);
+  cursor:pointer;
+  transition:transform .25s ease, background .25s ease, border-color .25s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+
+.btn-primary{
+  background:linear-gradient(100deg, var(--purple), var(--purple-deep));
+  color:var(--white);
+  border-color:transparent;
+}
+
+.btn-primary:hover{ transform:translateY(-2px); }
+
+.btn-ghost{ color:var(--muted); background:transparent; }
+.btn-ghost:hover{ color:var(--white); border-color:var(--purple-bright); }
+
+.hero-scroll{
+  position:absolute;
+  bottom:38px; left:min(7vw,64px);
+  font-size:.72rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.hero-scroll::before{
+  content:"";
+  width:1px; height:34px;
+  background:linear-gradient(var(--purple-bright), transparent);
+  animation:scrollline 1.8s ease-in-out infinite;
+}
+
+@keyframes scrollline{
+  0%{ transform:scaleY(0); transform-origin:top; }
+  50%{ transform:scaleY(1); transform-origin:top; }
+  50.01%{ transform-origin:bottom; }
+  100%{ transform:scaleY(0); transform-origin:bottom; }
+}
+
+/* ============================================================
+   2) CLIENTES — marquee interativo, fotos passando dir->esq
+   ============================================================ */
+.clients{
+  padding-top:70px;
+  padding-bottom:70px;
+  border-top:var(--edge);
+  border-bottom:var(--edge);
+  background:var(--bg-soft);
+}
+
+.clients-label{
+  text-align:center;
+  margin-bottom:38px;
+}
+
+.marquee{
+  position:relative;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image:linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.marquee-track{
+  display:flex;
+  gap:56px;
+  width:max-content;
+  animation:marquee linear infinite;
+  animation-duration:28s; /* valor padrão, o JS recalcula isso pela largura real */
+}
+
+.marquee:hover .marquee-track{ animation-play-state:paused; }
+
+@keyframes marquee{
+  from{ transform:translateX(0); }
+  to{ transform:translateX(calc(-1 * var(--marquee-distance, 50%))); }
+}
+
+.client-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+  opacity:.55;
+  filter:grayscale(1);
+  transition:opacity .3s ease, filter .3s ease, transform .3s ease;
+}
+
+.client-item:hover{
+  opacity:1;
+  filter:grayscale(0);
+  transform:translateY(-4px);
+}
+
+.client-item img{
+  width:64px; height:64px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--purple-line);
+}
+
+.client-item span{
+  font-size:.75rem;
+  color:var(--muted);
+  font-weight:600;
+}
+
+/* ============================================================
+   3) MELHORES TRABALHOS — grid de destaques
+   ============================================================ */
+.works-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:22px;
+}
+
+.work-card{
+  position:relative;
+  border-radius:var(--radius);
+  overflow:hidden;
+  aspect-ratio:16/10;
+  cursor:pointer;
+  border:var(--edge);
+  background:var(--surface);
+}
+
+.work-card .thumb{
+  position:absolute; inset:0;
+  background-size:cover;
+  background-position:center;
+  transition:transform .5s ease, filter .5s ease;
+}
+
+.work-card::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(11,10,16,.92) 0%, rgba(11,10,16,.15) 55%, transparent 100%);
+}
+
+.work-card:hover .thumb{
+  transform:scale(1.07);
+  filter:saturate(1.3) hue-rotate(-6deg);
+}
+
+.work-info{
+  position:absolute; left:18px; right:18px; bottom:16px;
+  z-index:2;
+}
+
+.work-info .tag{
+  font-size:.68rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--purple-bright);
+  font-weight:700;
+}
+
+.work-info h3{
+  font-family:var(--font-display);
+  font-size:1.05rem;
+  margin-top:6px;
+  font-weight:600;
+}
+
+.play-dot{
+  position:absolute; top:16px; right:16px;
+  z-index:2;
+  width:38px; height:38px;
+  border-radius:50%;
+  background:rgba(11,10,16,.55);
+  border:var(--edge);
+  display:flex; align-items:center; justify-content:center;
+  backdrop-filter:blur(6px);
+  transition:background .3s ease, transform .3s ease;
+}
+
+.work-card:hover .play-dot{
+  background:var(--purple);
+  transform:scale(1.08);
+}
+
+.play-dot svg{ width:13px; height:13px; fill:var(--white); }
+
+/* ============================================================
+   4) ABAS — Vídeos longos / Shorts
+   ============================================================ */
+.tabs-bar{
+  display:inline-flex;
+  gap:6px;
+  padding:6px;
+  background:var(--surface);
+  border:var(--edge);
+  border-radius:100px;
+  margin-bottom:40px;
+}
+
+.tab-btn{
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  font-family:var(--font-body);
+  font-weight:700;
+  font-size:.85rem;
+  padding:11px 24px;
+  border-radius:100px;
+  cursor:pointer;
+  transition:color .25s ease, background .25s ease;
+}
+
+.tab-btn.active{
+  background:linear-gradient(100deg, var(--purple), var(--purple-deep));
+  color:var(--white);
+}
+
+.tab-panel{ display:none; }
+.tab-panel.active{ display:block; }
+
+.longs-grid{
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:22px;
+}
+
+.shorts-grid{
+  display:grid;
+  grid-template-columns:repeat(5, 1fr);
+  gap:16px;
+}
+
+.short-card{
+  position:relative;
+  aspect-ratio:9/16;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  border:var(--edge);
+  background:var(--surface);
+}
+
+.short-card .thumb{
+  position:absolute; inset:0;
+  background-size:cover;
+  background-position:center;
+  transition:transform .5s ease;
+}
+
+.short-card:hover .thumb{ transform:scale(1.08); }
+
+.short-card::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(to top, rgba(11,10,16,.9), transparent 60%);
+}
+
+.short-info{
+  position:absolute; left:12px; right:12px; bottom:12px; z-index:2;
+}
+
+.short-info h4{
+  font-size:.78rem;
+  font-weight:700;
+  line-height:1.3;
+}
+
+/* ============================================================
+   LIGHTBOX (player)
+   ============================================================ */
+.lightbox{
+  position:fixed; inset:0;
+  background:rgba(6,5,10,.92);
+  backdrop-filter:blur(6px);
+  z-index:1000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:5vw;
+}
+
+.lightbox.open{ display:flex; }
+
+.lightbox-inner{
+  width:100%;
+  max-width:960px;
+}
+
+.lightbox-frame{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+  border-radius:14px;
+  overflow:hidden;
+  border:var(--edge);
+}
+
+.lightbox-frame.vertical{
+  max-width:380px;
+  aspect-ratio:9/16;
+  margin:0 auto;
+}
+
+.lightbox-frame iframe{
+  width:100%; height:100%; border:none;
+}
+
+.lightbox-close{
+  margin-top:18px;
+  text-align:center;
+  color:var(--muted);
+  font-size:.85rem;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.lightbox-close:hover{ color:var(--white); }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  padding:60px min(7vw,64px) 40px;
+  border-top:var(--edge);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+footer .foot-name{
+  font-family:var(--font-display);
+  font-weight:800;
+}
+
+footer .foot-links{
+  display:flex;
+  gap:24px;
+  list-style:none;
+}
+
+footer .foot-links a{
+  color:var(--muted);
+  font-size:.85rem;
+  font-weight:600;
+  transition:color .25s ease;
+}
+
+footer .foot-links a:hover{ color:var(--purple-bright); }
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+@media (max-width:900px){
+  nav ul{ display:none; }
+  .works-grid{ grid-template-columns:repeat(2,1fr); }
+  .longs-grid{ grid-template-columns:1fr; }
+  .shorts-grid{ grid-template-columns:repeat(3,1fr); }
+}
+
+@media (max-width:560px){
+  .works-grid{ grid-template-columns:1fr; }
+  .shorts-grid{ grid-template-columns:repeat(2,1fr); }
+  footer{ flex-direction:column; align-items:flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
+}
+
+</style>
 </head>
-
 <body>
 
-
-    <header>
-
-        <div class="logo">
-            REDZNX
-        </div>
-
-        <nav>
-
-            <ul>
-
-                <li><a href="#home">Início</a></li>
-
-                <li><a href="#about">Sobre</a></li>
-
-                <li><a href="#projects">Projetos</a></li>
-
-                <li><a href="#skills">Habilidades</a></li>
-
-                <li><a href="#contact">Contato</a></li>
-
-            </ul>
-
-        </nav>
-
-    </header>
-
-
-
-
-    <section id="home">
-
-        <div class="hero-text">
-
-            <p>EDITOR DE VÍDEO</p>
-
-            <h1>
-                Curtiu? Entra em contato
-            </h1>
-
-            <h3>
-                Especializado em YouTube, Shorts, TikTok, Reels e Motion Graphics.
-            </h3>
-
-            <div class="buttons">
-
-                <a href="#projects" class="btn-primary">
-                    Ver Projetos
-                </a>
-
-                <a href="#contact" class="btn-secondary">
-                    Entrar em Contato
-                </a>
-
-            </div>
-
-        </div>
-
-        <div class="hero-image">
-
-   
-
-            <img src="img/eli.jpg" alt="Foto de Bruno">
-
-        </div>
-
-    </section>
-
-
-
-
-
-    <section id="about">
-
-        <div class="section-title">
-
-            <h2>Sobre Mim</h2>
-
-        </div>
-
-        <div class="about-content">
-
-            <p>
-
-                Olá! Meu nome é Bruno Carvalho.
-
-                Sou editor de vídeo apaixonado por criar conteúdos modernos, dinâmicos e envolventes.
-
-                Trabalho com vídeos para YouTube, Shorts, TikTok e Reels, buscando sempre entregar uma edição que mantenha a atenção do público do início ao fim.
-
-            </p>
-
-            <p>
-
-                Meu objetivo é transformar ideias em vídeos profissionais que aumentem retenção, engajamento e qualidade visual.
-
-            </p>
-
-        </div>
-
-    </section>
-
-
-
-
-
-    <section id="projects">
-
-        <div class="section-title">
-
-            <h2>Projetos</h2>
-
-        </div>
-
-        <a href="https://youtu.be/axVKZN0t-Fg?si=3meRYPjzaxCmdPP7" target="_blank">
-        
-            <div class="projects-grid">
-
-            <div class="card">
-
-                <img src="img/backrooms.png">
-
-                <h3>jogo das backrooms só que ruim | Os "PEORIS" jogus da Stim #3</h3>
-
-                <p>
-
-                    Edição dinâmica para YouTube.
-
-                </p>
-
-            </div>
-            </a>
-
-            <a href="https://www.tiktok.com/@redznxedita/video/7627381276391066881?is_from_webapp=1&sender_device=pc&web_id=7593968930927543829" target="_blank">
-
-                <div class="card">
-
-                <img src="img/dinha.png">
-
-                <h3>Dinha zuando o cara ksksks</h3>
-
-                <p>
-
-                    Shorts bem humorado.
-
-                </p>
-
-            </div>
-            </a>
-
-            <a href="https://youtu.be/MWDRFK3fBqY?si=vdR4GMPbrpit_PRm" target="_blank">
-
-                <div class="card">
-
-                <img src="img/terrivel.png">
-
-                <h3>o jogo MAIS PERTURBADOR que eu já joguei</h3>
-
-                <p>
-
-                    Estilo misterioso.
-
-                </p>
-
-            </div>
-            </a>
-
-              <a href="https://youtu.be/NRgFc1h0dYY?si=gFn4Y6FOfxaqFvR_" target="_blank">
-
-                <div class="card">
-
-                <img src="img/rematch.png">
-
-                <h3>Rematch em 2026 ainda é bom kkkkkkkkk</h3>
-
-                <p>
-
-                    Edição dinâmica para youtube.
-                </div>
-                </a>
-                        <a href="https://youtu.be/4WU0OBDa4-w?si=6RnNw9F02VU8fmkx" target="_blank">
-
-                <div class="card">
-
-                <img src="img/craft.png">
-
-                <h3>é ASSIM que o FILME DO MINECRAFT deveria ter sido</h3>
-
-                <p>
-
-                    Edição dinâmica para youtube.
-                </div>
-                </a>
-        </div>
-
-    </section>
-
-
-
-
-
-    <section id="skills">
-
-        <div class="section-title">
-
-            <h2>Habilidades</h2>
-
-        </div>
-
-        <div class="skills-container">
-
-            <div class="skill">
-
-                <h3>Adobe Premiere</h3>
-
-                <div class="bar">
-
-                    <div class="fill premiere"></div>
-
-                </div>
-
-            </div>
-
-            <div class="skill">
-
-                <h3>After Effects</h3>
-
-                <div class="bar">
-
-                    <div class="fill ae"></div>
-
-                </div>
-
-            </div>
-
-            <div class="skill">
-
-                <h3>Photoshop</h3>
-
-                <div class="bar">
-
-                    <div class="fill ps"></div>
-
-                </div>
-
-            </div>
-
-            
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-
-
-    <section id="contact">
-
-        <div class="section-title">
-
-            <h2>Contato</h2>
-
-        </div>
-
-        <div class="contact-links">
-
-        <a href="https://www.instagram.com/redznx.ae/" target="_blank"> 
+<nav>
+  <div class="logo">red<span>znx</span></div>
+  <ul>
+    <li><a href="#inicio">Início</a></li>
+    <li><a href="#clientes">Clientes</a></li>
+    <li><a href="#trabalhos">Trabalhos</a></li>
+    <li><a href="#edicoes">Edições</a></li>
+  </ul>
+</nav>
+
+<!-- ============================================================
+     1) HERO — Nome e o que você faz
+     ============================================================ -->
+<header class="hero" id="inicio">
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    <span class="eyebrow">Disponível para novos projetos</span>
+  </div>
+  <h1>redznx<br><em>Editor de Vídeo.</em></h1>
+  <p class="hero-role">
+    Transformo gravações brutas em <strong>histórias com ritmo</strong> —
+    cortes, memes e dinâmica, tanto em formato longo
+    quanto em shorts para redes sociais.
+  </p>
+  <div class="hero-actions">
+    <a href="#trabalhos" class="btn btn-primary">Ver trabalhos</a>
+    <a href="#footer" class="btn btn-ghost">Falar comigo</a>
+  </div>
+  <div class="hero-scroll">Role para baixo</div>
+</header>
+
+<!-- ============================================================
+     2) CLIENTES — marquee automático, pausa ao passar o mouse
+     ============================================================ -->
+<section class="clients" id="clientes">
+  <div class="clients-label">
+    <div class="eyebrow" style="text-align:center;">Confiaram no meu trabalho</div>
+  </div>
+  <div class="marquee">
+    <div class="marquee-track" id="marqueeTrack"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     3) MELHORES TRABALHOS
+     ============================================================ -->
+<section class="section" id="trabalhos">
+  <div class="section-head">
+    <div class="eyebrow">Portfólio</div>
+    <h2>Alguns dos meus melhores trabalhos</h2>
+    <p>Uma seleção de projetos que mostram bem o que eu faço.</p>
+  </div>
+  <div class="works-grid" id="worksGrid"></div>
+</section>
+
+<!-- ============================================================
+     4) ABAS — Edições longas / Shorts
+     ============================================================ -->
+<section class="section" id="edicoes">
+  <div class="section-head">
+    <div class="eyebrow">Edições</div>
+    <h2>Vídeos longos & shorts</h2>
+    <p>Navegue entre os formatos abaixo.</p>
+  </div>
+
+  <div class="tabs-bar">
+    <button class="tab-btn active" data-tab="longs">Vídeos longos</button>
+    <button class="tab-btn" data-tab="shorts">Shorts</button>
+  </div>
+
+  <div class="tab-panel active" id="panel-longs">
+    <div class="longs-grid" id="longsGrid"></div>
+  </div>
+
+  <div class="tab-panel" id="panel-shorts">
+    <div class="shorts-grid" id="shortsGrid"></div>
+  </div>
+</section>
+
+<footer id="footer">
+  <div class="foot-name">red<span style="color:var(--purple-bright)">znx</span></div>
+  <ul class="foot-links">
+    <li><a href="https://www.instagram.com/redznx.ae/" target="_blank"> 
             
                 Instagram
-            </a>
-        <a href="https://youtube.com/@redznxx?si=bJfogUKsRbvi0aRL" target="_blank">
+            </a></li>
+
+    <li><a href="https://youtube.com/@redznxx?si=bJfogUKsRbvi0aRL" target="_blank">
             
                 YouTube
-            </a>
-
-        <a href="https://www.tiktok.com/@redz_editz_?is_from_webapp=1&sender_device=pc" target="_blank">
+            </a></li>
+            <li><a href="https://www.tiktok.com/@redz_editz_?is_from_webapp=1&sender_device=pc" target="_blank">
         
                 Tiktok
-            </a>
+            </a></li>
+    <li><a href="mailto:voce@email.com">redznxbr@gmail.com</a></li>
+  </ul>
+</footer>
+
+<!-- Lightbox de reprodução -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <div class="lightbox-frame" id="lightboxFrame"></div>
+    <div class="lightbox-close" id="lightboxClose">Fechar ✕</div>
+  </div>
+</div>
 
 
+<script>
+/* ================================================================
+   ÁREA DE CONTEÚDO
+   ================================================================
+   Tudo que você precisa editar para adicionar coisas novas está
+   AQUI DENTRO. Não precisa mexer no HTML nem no CSS.
 
-        </div>
+   - Para trocar uma foto/thumbnail: cole o link de uma imagem
+     (pode ser do imgur, do seu Google Drive público, etc.)
+   - Para um vídeo do YouTube: pegue o "ID" do link.
+     Ex: em youtube.com/watch?v=ABC123, o embedId é "ABC123"
+   - Para um vídeo do Vimeo: use embedType:"vimeo" e o número do vídeo.
+   - Se não quiser player embutido, deixe embedId vazio ("") e
+     coloque um link em "url" — vai abrir em outra aba.
+   ================================================================ */
 
-    </section>
+// -------------------- 2) CLIENTES --------------------
+// Basta copiar um bloco { } e colar embaixo dos outros para adicionar
+// mais um cliente. "img" é a foto/logo (pode ser um link ou um dos
+// avatares de placeholder abaixo).
+const CLIENTS = [
+  { name:"Dois Bits", img:"https://yt3.googleusercontent.com/mc1ZxJvl6mV3AD335KN8keeqLhsjCunusJGm5DDPaTsbSbDAJ93tc8nQT6BsNJJecaqlNvq7=s160-c-k-c0x00ffffff-no-rj" },
+  { name:"redznx", img:"https://yt3.googleusercontent.com/M4TZoYLffr4MOZbmR1-sUq9OLYjf7lKBtFlkrSCBVXHZ_0j3esUgwNawA3vZFYuLmd4TT0G6=s160-c-k-c0x00ffffff-no-rj" },
+  { name:"Dois Bits", img:"https://yt3.googleusercontent.com/mc1ZxJvl6mV3AD335KN8keeqLhsjCunusJGm5DDPaTsbSbDAJ93tc8nQT6BsNJJecaqlNvq7=s160-c-k-c0x00ffffff-no-rj" },
+  { name:"redznx", img:"https://yt3.googleusercontent.com/M4TZoYLffr4MOZbmR1-sUq9OLYjf7lKBtFlkrSCBVXHZ_0j3esUgwNawA3vZFYuLmd4TT0G6=s160-c-k-c0x00ffffff-no-rj" },
+  { name:"Dois Bits", img:"https://yt3.googleusercontent.com/mc1ZxJvl6mV3AD335KN8keeqLhsjCunusJGm5DDPaTsbSbDAJ93tc8nQT6BsNJJecaqlNvq7=s160-c-k-c0x00ffffff-no-rj" },
+  { name:"redznx", img:"https://yt3.googleusercontent.com/M4TZoYLffr4MOZbmR1-sUq9OLYjf7lKBtFlkrSCBVXHZ_0j3esUgwNawA3vZFYuLmd4TT0G6=s160-c-k-c0x00ffffff-no-rj" },
+  // ADICIONE NOVOS CLIENTES AQUI ↓
+  // { name:"Cliente G", img:"https://link-da-foto.jpg" },
+];
 
+// -------------------- 3) MELHORES TRABALHOS --------------------
+// "tag" é a etiqueta pequena (ex: categoria/cliente), "title" é o
+// nome do vídeo, "thumb" é a imagem de capa, "embedId"/"embedType"
+// controlam o player ao clicar.
+const BEST_WORKS = [
+  {
+    tag:"Comentando sobre",
+    title:"é ASSIM que o FILME DO MINECRAFT deveria ter sido",
+    thumb:"https://img.youtube.com/vi/4WU0OBDa4-w/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/4WU0OBDa4-w?si=eXzzJZxWaNPj9lMp"
+  },
+  {
+    tag:"Gameplay humorada com terror",
+    title:"Jogando os MELHORES jogos de terror do ROBLOX (mais ou menos...)",
+    thumb:"https://img.youtube.com/vi/uUE58QmCpLU/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/uUE58QmCpLU?si=Rt0cMtRMWGApHGyh"
+  },
+  {
+    tag:"Gameplay humorada",
+    title:"Rematch em 2026 ainda é bom kkkkkkkkk",
+    thumb:"https://img.youtube.com/vi/NRgFc1h0dYY/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/NRgFc1h0dYY?si=lAadRILdBBn8v8gV"
+  },
+   {
+    tag:"Gameplay humorada com terror 2",
+    title:"testando um jogo de terror duvidoso... | Os PEORIS jogus da Stim #2",
+    thumb:"https://img.youtube.com/vi/hXb0NMn2VtQ/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/hXb0NMn2VtQ?si=1W8PqIVGx0nb_OzU"
+  },
+  // ADICIONE NOVOS TRABALHOS AQUI ↓
+  // { tag:"Categoria", title:"Nome do vídeo", thumb:"link-da-capa.jpg",
+  //   embedType:"youtube", embedId:"IDdoVideo", url:"" },
+];
 
+// -------------------- 4a) VÍDEOS LONGOS --------------------
+const LONG_VIDEOS = [
+  {
+    title:"O jogo MAIS PERTURBADOR que eu já joguei",
+    thumb:"https://img.youtube.com/vi/MWDRFK3fBqY/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/MWDRFK3fBqY?si=22_-loP-mc5AkDJM"
+  },
+  {
+    title:"jogo das backrooms só que ruim | Os PEORIS jogus da Stim #3",
+    thumb:"https://img.youtube.com/vi/axVKZN0t-Fg/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/axVKZN0t-Fg?si=Dn2LvU6Zl-Cg6pCB"
+  },
+  // ADICIONE NOVOS VÍDEOS LONGOS AQUI ↓
+  // { title:"Nome do vídeo", thumb:"link-da-capa.jpg",
+  //   embedType:"youtube", embedId:"IDdoVideo", url:"" },
+];
 
+// -------------------- 4b) SHORTS --------------------
+const SHORTS = [
+  { title:"Corte viral #1", thumb:"https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
+  { title:"Bastidores", thumb:"https://images.unsplash.com/photo-1598550476439-6847785fcea6?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
+  { title:"Transição rápida", thumb:"https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
+  { title:"Trend áudio", thumb:"https://images.unsplash.com/photo-1554080353-a576cf803bda?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
+  { title:"Making of", thumb:"https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
+  // ADICIONE NOVOS SHORTS AQUI ↓
+  // { title:"Nome do short", thumb:"link-da-capa.jpg",
+  //   embedType:"youtube", embedId:"IDdoVideo", url:"" },
+];
 
+/* ================================================================
+   A partir daqui é o motor que desenha tudo na tela.
+   Não precisa mexer aqui embaixo.
+   ================================================================ */
 
-    <footer>
+// ---- Clientes (marquee) ----
+// Rola infinitamente não importa quantos clientes você adicionar na
+// lista CLIENTS lá em cima: o script mede a largura real do conteúdo
+// e duplica quantas vezes forem necessárias para nunca sobrar espaço
+// vazio no loop. A velocidade (PIXELS_POR_SEGUNDO) fica sempre igual,
+// então adicionar mais clientes deixa a fita mais longa, não mais rápida.
+const marqueeTrack = document.getElementById('marqueeTrack');
+const PIXELS_POR_SEGUNDO = 55;
 
-        <p>
+function clientItemHTML(c){
+  return `
+    <div class="client-item">
+      <img src="${c.img}" alt="${c.name}" loading="lazy">
+      <span>${c.name}</span>
+    </div>
+  `;
+}
 
-            © 2026 Bruno Carvalho.
+function renderClients(){
+  // 1) desenha um conjunto único primeiro, só para medir a largura
+  marqueeTrack.innerHTML = CLIENTS.map(clientItemHTML).join('');
+  const singleSetWidth = marqueeTrack.scrollWidth;
+  const viewportWidth = marqueeTrack.parentElement.clientWidth;
 
-            Todos os direitos reservados.
+  // 2) duplica o conjunto até ter pelo menos 2x a largura da tela
+  //    (garante que nunca aparece espaço vazio, mesmo com poucos clientes)
+  const timesNeeded = Math.max(2, Math.ceil((viewportWidth * 2) / singleSetWidth));
+  const fullList = Array.from({ length: timesNeeded }, () => CLIENTS).flat();
+  marqueeTrack.innerHTML = fullList.map(clientItemHTML).join('');
 
-        </p>
+  // 3) a animação sempre anda 1/N do trilho (uma "volta" de conteúdo original)
+  const totalWidth = marqueeTrack.scrollWidth;
+  marqueeTrack.style.setProperty('--marquee-distance', `${totalWidth / timesNeeded}px`);
+  marqueeTrack.style.animationDuration = `${(totalWidth / timesNeeded) / PIXELS_POR_SEGUNDO}s`;
+}
 
-    </footer>
+// ---- Melhores trabalhos ----
+const worksGrid = document.getElementById('worksGrid');
+function renderWorks(){
+  worksGrid.innerHTML = BEST_WORKS.map((w,i) => `
+    <div class="work-card" data-source="best" data-index="${i}">
+      <div class="thumb" style="background-image:url('${w.thumb}')"></div>
+      <div class="play-dot"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="work-info">
+        <div class="tag">${w.tag}</div>
+        <h3>${w.title}</h3>
+      </div>
+    </div>
+  `).join('');
+}
 
+// ---- Vídeos longos ----
+const longsGrid = document.getElementById('longsGrid');
+function renderLongs(){
+  longsGrid.innerHTML = LONG_VIDEOS.map((v,i) => `
+    <div class="work-card" data-source="long" data-index="${i}">
+      <div class="thumb" style="background-image:url('${v.thumb}')"></div>
+      <div class="play-dot"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="work-info"><h3>${v.title}</h3></div>
+    </div>
+  `).join('');
+}
 
-    <script src="script.js"></script>
+// ---- Shorts ----
+const shortsGrid = document.getElementById('shortsGrid');
+function renderShorts(){
+  shortsGrid.innerHTML = SHORTS.map((s,i) => `
+    <div class="short-card" data-source="short" data-index="${i}">
+      <div class="thumb" style="background-image:url('${s.thumb}')"></div>
+      <div class="play-dot" style="width:30px;height:30px;top:10px;right:10px;">
+        <svg viewBox="0 0 24 24" style="width:11px;height:11px;"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="short-info"><h4>${s.title}</h4></div>
+    </div>
+  `).join('');
+}
+
+renderClients();
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(renderClients, 250);
+});
+renderWorks();
+renderLongs();
+renderShorts();
+
+// ---- Abas (tabs) ----
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// ---- Lightbox (player ao clicar num card) ----
+const lightbox = document.getElementById('lightbox');
+const lightboxFrame = document.getElementById('lightboxFrame');
+const sources = { best: BEST_WORKS, long: LONG_VIDEOS, short: SHORTS };
+
+function openLightbox(item, isVertical){
+  if(!item.embedId && item.url){
+    window.open(item.url, '_blank');
+    return;
+  }
+  let src = '';
+  if(item.embedType === 'vimeo'){
+    src = `https://player.vimeo.com/video/${item.embedId}?autoplay=1`;
+  } else {
+    src = `https://www.youtube.com/embed/${item.embedId}?autoplay=1`;
+  }
+  lightboxFrame.className = 'lightbox-frame' + (isVertical ? ' vertical' : '');
+  lightboxFrame.innerHTML = `<iframe src="${src}" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+  lightbox.classList.add('open');
+}
+
+function closeLightbox(){
+  lightbox.classList.remove('open');
+  lightboxFrame.innerHTML = '';
+}
+
+document.addEventListener('click', (e) => {
+  const card = e.target.closest('[data-source]');
+  if(!card) return;
+  const item = sources[card.dataset.source][card.dataset.index];
+  openLightbox(item, card.dataset.source === 'short');
+});
+
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+</script>
 
 </body>
-
 </html>
