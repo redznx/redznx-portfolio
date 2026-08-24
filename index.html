@@ -581,6 +581,7 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
 }
 
 @media (max-width:560px){
+.to-top{ right:16px; bottom:16px; width:42px; height:42px; }
   .works-grid{ grid-template-columns:1fr; }
   .shorts-grid{ grid-template-columns:repeat(2,1fr); }
   footer{ flex-direction:column; align-items:flex-start; }
@@ -589,7 +590,26 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
 @media (prefers-reduced-motion: reduce){
   *{ animation:none !important; transition:none !important; }
 }
+@media (max-width:560px){
+  .section{ padding:70px 20px; }
+  .hero{ padding:0 20px; }
+  .hero h1{ font-size:clamp(2.2rem,11vw,3rem); }
+  .hero-role{ font-size:1rem; }
 
+  nav{ padding:16px 20px; }
+
+  .works-grid{ grid-template-columns:1fr; gap:16px; }
+  .longs-grid{ grid-template-columns:1fr; gap:16px; }
+  .shorts-grid{ grid-template-columns:repeat(2,1fr); gap:12px; }
+
+  .tabs-bar{ width:100%; justify-content:center; }
+  .tab-btn{ flex:1; padding:11px 12px; font-size:.8rem; }
+
+  .marquee-track{ gap:32px; }
+  .client-item img{ width:52px; height:52px; }
+
+  footer{ padding:40px 20px 30px; flex-direction:column; align-items:flex-start; gap:16px; }
+}
 </style>
 </head>
 <body>
@@ -603,6 +623,7 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
     <li><a href="#edicoes">Edições</a></li>
   </ul>
 </nav>
+
 
 <!-- ============================================================
      1) HERO — Nome e o que você faz
