@@ -2,15 +2,17 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Portfólio — Editor de Vídeo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Unbounded:wght@400;600;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 
 /* ============================================================
    TOKENS — mude as cores/fontes do site inteiro aqui
+   Paleta agora com toque "quadrinho / Aranhaverso":
+   roxo profundo + rosa choque + azul neon + contornos pretos
    ============================================================ */
 :root{
   --bg:            #0b0a10;
@@ -21,17 +23,36 @@
   --purple:        #7c3aed;
   --purple-bright: #a78bfa;
   --purple-line:   #4c2a8f;
+  --pink:          #ff2d78;
+  --pink-2:        #ff5fa8;
+  --cyan:          #22e6ff;
+  --ink:           #050308;
   --white:         #f7f5fb;
   --muted:         #9992ad;
   --font-display:  'Unbounded', sans-serif;
+  --font-hero:     'Bangers', 'Unbounded', sans-serif;
   --font-body:     'Manrope', sans-serif;
   --radius:        18px;
   --edge:          1px solid rgba(167,139,250,0.18);
+  --comic-shadow:  6px 6px 0 var(--ink);
+  --comic-shadow-sm: 4px 4px 0 var(--ink);
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* mesma paleta em qualquer esquema do dispositivo — é a marca do site */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b0a10; --white:#f7f5fb;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b0a10; --white:#f7f5fb;
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
 
-html{ scroll-behavior:smooth; }
+html{ scroll-behavior:smooth; scroll-padding-top: env(safe-area-inset-top, 0px); }
 
 body{
   background:var(--bg);
@@ -40,17 +61,29 @@ body{
   overflow-x:hidden;
 }
 
+/* textura de grão fino */
 body::before{
-  /* textura de grão sutil, remete a filme/edição */
   content:"";
   position:fixed; inset:0;
   pointer-events:none;
-  z-index:999;
+  z-index:998;
   opacity:.035;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-::selection{ background:var(--purple); color:var(--white); }
+/* trama de bolinhas estilo quadrinho (halftone), bem sutil, por cima de tudo */
+body::after{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:997;
+  opacity:.05;
+  mix-blend-mode:screen;
+  background-image:radial-gradient(var(--pink) 1px, transparent 1.4px);
+  background-size:7px 7px;
+}
+
+::selection{ background:var(--pink); color:var(--white); }
 
 a{ color:inherit; text-decoration:none; }
 
@@ -98,7 +131,7 @@ nav{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:22px min(7vw,64px);
+  padding:calc(22px + env(safe-area-inset-top, 0px)) min(7vw,64px) 22px;
   backdrop-filter:blur(10px);
   background:linear-gradient(to bottom, rgba(11,10,16,.85), transparent);
 }
@@ -110,7 +143,7 @@ nav .logo{
   letter-spacing:.02em;
 }
 
-nav .logo span{ color:var(--purple-bright); }
+nav .logo span{ color:var(--pink); }
 
 nav ul{
   list-style:none;
@@ -127,10 +160,8 @@ nav ul a{
 
 nav ul a:hover{ color:var(--white); }
 
-.nav-toggle{ display:none; }
-
 /* ============================================================
-   1) HERO — nome e o que eu faço
+   1) HERO
    ============================================================ */
 .hero{
   min-height:100svh;
@@ -152,6 +183,18 @@ nav ul a:hover{ color:var(--white); }
   animation:drift 14s ease-in-out infinite alternate;
 }
 
+/* segundo brilho rosa/ciano pra sensação "glitch" de aranhaverso */
+.hero-glow-2{
+  position:absolute;
+  bottom:-10%; left:-8%;
+  width:45vw; height:45vw;
+  max-width:600px; max-height:600px;
+  background:radial-gradient(circle, rgba(34,230,255,.18), transparent 70%);
+  filter:blur(50px);
+  pointer-events:none;
+  animation:drift 16s ease-in-out infinite alternate-reverse;
+}
+
 @keyframes drift{
   from{ transform:translate(0,0) scale(1); }
   to{ transform:translate(-6%,8%) scale(1.08); }
@@ -166,8 +209,8 @@ nav ul a:hover{ color:var(--white); }
 
 .hero-eyebrow .dot{
   width:8px; height:8px; border-radius:50%;
-  background:var(--purple-bright);
-  box-shadow:0 0 12px var(--purple-bright);
+  background:var(--pink);
+  box-shadow:0 0 12px var(--pink);
   animation:pulse 2s ease-in-out infinite;
 }
 
@@ -177,19 +220,28 @@ nav ul a:hover{ color:var(--white); }
 }
 
 .hero h1{
-  font-family:var(--font-display);
-  font-weight:900;
-  font-size:clamp(2.6rem,9vw,6.4rem);
-  line-height:.98;
-  letter-spacing:-.01em;
+  font-family:var(--font-hero);
+  font-weight:400;
+  letter-spacing:.01em;
+  font-size:clamp(3rem,10vw,7.2rem);
+  line-height:.92;
+  color:var(--white);
+  -webkit-text-stroke:2px var(--ink);
+  text-shadow:
+    var(--comic-shadow),
+    3px -3px 0 var(--cyan),
+    -3px 3px 0 var(--pink);
 }
 
 .hero h1 em{
   font-style:normal;
-  background:linear-gradient(100deg, var(--purple-bright), var(--purple));
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
+  display:inline-block;
+  color:var(--purple-bright);
+  -webkit-text-stroke:2px var(--ink);
+  text-shadow:
+    var(--comic-shadow),
+    3px -3px 0 var(--pink),
+    -3px 3px 0 var(--cyan);
 }
 
 .hero-role{
@@ -211,28 +263,28 @@ nav ul a:hover{ color:var(--white); }
 
 .btn{
   font-family:var(--font-body);
-  font-weight:700;
+  font-weight:800;
   font-size:.9rem;
   padding:15px 28px;
-  border-radius:100px;
-  border:var(--edge);
+  border-radius:12px;
+  border:2px solid var(--ink);
   cursor:pointer;
-  transition:transform .25s ease, background .25s ease, border-color .25s ease;
+  transition:transform .18s ease, box-shadow .18s ease, background .25s ease;
   display:inline-flex;
   align-items:center;
   gap:8px;
+  box-shadow:var(--comic-shadow-sm);
 }
 
 .btn-primary{
-  background:linear-gradient(100deg, var(--purple), var(--purple-deep));
+  background:linear-gradient(100deg, var(--pink), var(--purple));
   color:var(--white);
-  border-color:transparent;
 }
 
-.btn-primary:hover{ transform:translateY(-2px); }
+.btn-primary:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); }
 
-.btn-ghost{ color:var(--muted); background:transparent; }
-.btn-ghost:hover{ color:var(--white); border-color:var(--purple-bright); }
+.btn-ghost{ color:var(--white); background:var(--surface); }
+.btn-ghost:hover{ transform:translate(-2px,-2px); box-shadow:6px 6px 0 var(--ink); border-color:var(--cyan); }
 
 .hero-scroll{
   position:absolute;
@@ -261,7 +313,7 @@ nav ul a:hover{ color:var(--white); }
 }
 
 /* ============================================================
-   2) CLIENTES — marquee interativo, fotos passando dir->esq
+   2) CLIENTES
    ============================================================ */
 .clients{
   padding-top:70px;
@@ -288,7 +340,7 @@ nav ul a:hover{ color:var(--white); }
   gap:56px;
   width:max-content;
   animation:marquee linear infinite;
-  animation-duration:28s; /* valor padrão, o JS recalcula isso pela largura real */
+  animation-duration:28s;
 }
 
 .marquee:hover .marquee-track{ animation-play-state:paused; }
@@ -329,22 +381,29 @@ nav ul a:hover{ color:var(--white); }
 }
 
 /* ============================================================
-   3) MELHORES TRABALHOS — grid de destaques
+   3) MELHORES TRABALHOS — cards estilo painel de quadrinho
    ============================================================ */
 .works-grid{
   display:grid;
   grid-template-columns:repeat(3, 1fr);
-  gap:22px;
+  gap:24px;
 }
 
 .work-card{
   position:relative;
-  border-radius:var(--radius);
+  border-radius:14px;
   overflow:hidden;
   aspect-ratio:16/10;
   cursor:pointer;
-  border:var(--edge);
+  border:2.5px solid var(--ink);
   background:var(--surface);
+  box-shadow:var(--comic-shadow);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.work-card:hover{
+  transform:translate(-3px,-3px);
+  box-shadow:9px 9px 0 var(--pink);
 }
 
 .work-card .thumb{
@@ -362,7 +421,7 @@ nav ul a:hover{ color:var(--white); }
 
 .work-card:hover .thumb{
   transform:scale(1.07);
-  filter:saturate(1.3) hue-rotate(-6deg);
+  filter:saturate(1.4) hue-rotate(-6deg);
 }
 
 .work-info{
@@ -374,7 +433,7 @@ nav ul a:hover{ color:var(--white); }
   font-size:.68rem;
   letter-spacing:.14em;
   text-transform:uppercase;
-  color:var(--purple-bright);
+  color:var(--cyan);
   font-weight:700;
 }
 
@@ -391,30 +450,31 @@ nav ul a:hover{ color:var(--white); }
   width:38px; height:38px;
   border-radius:50%;
   background:rgba(11,10,16,.55);
-  border:var(--edge);
+  border:2px solid var(--ink);
   display:flex; align-items:center; justify-content:center;
   backdrop-filter:blur(6px);
   transition:background .3s ease, transform .3s ease;
 }
 
 .work-card:hover .play-dot{
-  background:var(--purple);
+  background:var(--pink);
   transform:scale(1.08);
 }
 
 .play-dot svg{ width:13px; height:13px; fill:var(--white); }
 
 /* ============================================================
-   4) ABAS — Vídeos longos / Shorts
+   4) ABAS
    ============================================================ */
 .tabs-bar{
   display:inline-flex;
   gap:6px;
   padding:6px;
   background:var(--surface);
-  border:var(--edge);
+  border:2px solid var(--ink);
   border-radius:100px;
   margin-bottom:40px;
+  box-shadow:var(--comic-shadow-sm);
 }
 
 .tab-btn{
@@ -431,7 +491,7 @@ nav ul a:hover{ color:var(--white); }
 }
 
 .tab-btn.active{
-  background:linear-gradient(100deg, var(--purple), var(--purple-deep));
+  background:linear-gradient(100deg, var(--pink), var(--purple));
   color:var(--white);
 }
 
@@ -456,8 +516,15 @@ nav ul a:hover{ color:var(--white); }
   border-radius:14px;
   overflow:hidden;
   cursor:pointer;
-  border:var(--edge);
+  border:2.5px solid var(--ink);
   background:var(--surface);
+  box-shadow:var(--comic-shadow-sm);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.short-card:hover{
+  transform:translate(-2px,-2px);
+  box-shadow:7px 7px 0 var(--cyan);
 }
 
 .short-card .thumb{
@@ -513,7 +580,8 @@ nav ul a:hover{ color:var(--white); }
   background:#000;
   border-radius:14px;
   overflow:hidden;
-  border:var(--edge);
+  border:2.5px solid var(--ink);
+  box-shadow:var(--comic-shadow);
 }
 
 .lightbox-frame.vertical{
@@ -541,7 +609,7 @@ nav ul a:hover{ color:var(--white); }
    FOOTER
    ============================================================ */
 footer{
-  padding:60px min(7vw,64px) 40px;
+  padding:60px min(7vw,64px) calc(40px + env(safe-area-inset-bottom, 0px));
   border-top:var(--edge);
   display:flex;
   justify-content:space-between;
@@ -568,7 +636,7 @@ footer .foot-links a{
   transition:color .25s ease;
 }
 
-footer .foot-links a:hover{ color:var(--purple-bright); }
+footer .foot-links a:hover{ color:var(--pink); }
 
 /* ============================================================
    RESPONSIVO
@@ -581,22 +649,12 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
 }
 
 @media (max-width:560px){
-.to-top{ right:16px; bottom:16px; width:42px; height:42px; }
-  .works-grid{ grid-template-columns:1fr; }
-  .shorts-grid{ grid-template-columns:repeat(2,1fr); }
-  footer{ flex-direction:column; align-items:flex-start; }
-}
-
-@media (prefers-reduced-motion: reduce){
-  *{ animation:none !important; transition:none !important; }
-}
-@media (max-width:560px){
   .section{ padding:70px 20px; }
   .hero{ padding:0 20px; }
-  .hero h1{ font-size:clamp(2.2rem,11vw,3rem); }
+  .hero h1{ font-size:clamp(2.4rem,13vw,3.4rem); }
   .hero-role{ font-size:1rem; }
 
-  nav{ padding:16px 20px; }
+  nav{ padding:calc(16px + env(safe-area-inset-top, 0px)) 20px 16px; }
 
   .works-grid{ grid-template-columns:1fr; gap:16px; }
   .longs-grid{ grid-template-columns:1fr; gap:16px; }
@@ -608,7 +666,11 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
   .marquee-track{ gap:32px; }
   .client-item img{ width:52px; height:52px; }
 
-  footer{ padding:40px 20px 30px; flex-direction:column; align-items:flex-start; gap:16px; }
+  footer{ padding:40px 20px calc(30px + env(safe-area-inset-bottom, 0px)); flex-direction:column; align-items:flex-start; gap:16px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; }
 }
 </style>
 </head>
@@ -630,6 +692,7 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
      ============================================================ -->
 <header class="hero" id="inicio">
   <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
   <div class="hero-eyebrow">
     <span class="dot"></span>
     <span class="eyebrow">Disponível para novos projetos</span>
@@ -696,22 +759,12 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
 </section>
 
 <footer id="footer">
-  <div class="foot-name">red<span style="color:var(--purple-bright)">znx</span></div>
+  <div class="foot-name">red<span style="color:var(--pink)">znx</span></div>
   <ul class="foot-links">
-    <li><a href="https://www.instagram.com/redznx.ae/" target="_blank"> 
-            
-                Instagram
-            </a></li>
-
-    <li><a href="https://youtube.com/@redznxx?si=bJfogUKsRbvi0aRL" target="_blank">
-            
-                YouTube
-            </a></li>
-            <li><a href="https://www.tiktok.com/@redz_editz_?is_from_webapp=1&sender_device=pc" target="_blank">
-        
-                Tiktok
-            </a></li>
-    <li><a href="mailto:voce@email.com">redznxbr@gmail.com</a></li>
+    <li><a href="https://www.instagram.com/redznx.ae/" target="_blank">Instagram</a></li>
+    <li><a href="https://youtube.com/@redznxx?si=bJfogUKsRbvi0aRL" target="_blank">YouTube</a></li>
+    <li><a href="https://www.tiktok.com/@redz_editz_?is_from_webapp=1&sender_device=pc" target="_blank">Tiktok</a></li>
+    <li><a href="mailto:redznxbr@gmail.com">redznxbr@gmail.com</a></li>
   </ul>
 </footer>
 
@@ -741,27 +794,16 @@ footer .foot-links a:hover{ color:var(--purple-bright); }
    ================================================================ */
 
 // -------------------- 2) CLIENTES --------------------
-// Basta copiar um bloco { } e colar embaixo dos outros para adicionar
-// mais um cliente. "img" é a foto/logo (pode ser um link ou um dos
-// avatares de placeholder abaixo).
 const CLIENTS = [
   { name:"Dois Bits", img:"https://yt3.googleusercontent.com/mc1ZxJvl6mV3AD335KN8keeqLhsjCunusJGm5DDPaTsbSbDAJ93tc8nQT6BsNJJecaqlNvq7=s160-c-k-c0x00ffffff-no-rj" },
   { name:"redznx", img:"https://yt3.googleusercontent.com/M4TZoYLffr4MOZbmR1-sUq9OLYjf7lKBtFlkrSCBVXHZ_0j3esUgwNawA3vZFYuLmd4TT0G6=s160-c-k-c0x00ffffff-no-rj" },
   { name:"Raphyx", img:"https://yt3.googleusercontent.com/B5FRKXfknwJDa6-EGmlTXNfPxGqYmwkzxtx2QA-WS1h1nsPilP_cAoytf5igdR-dTQJy70dENw=s160-c-k-c0x00ffffff-no-rj" },
-  { name:"Dois Bits", img:"https://yt3.googleusercontent.com/mc1ZxJvl6mV3AD335KN8keeqLhsjCunusJGm5DDPaTsbSbDAJ93tc8nQT6BsNJJecaqlNvq7=s160-c-k-c0x00ffffff-no-rj" },
-  { name:"redznx", img:"https://yt3.googleusercontent.com/M4TZoYLffr4MOZbmR1-sUq9OLYjf7lKBtFlkrSCBVXHZ_0j3esUgwNawA3vZFYuLmd4TT0G6=s160-c-k-c0x00ffffff-no-rj" },
-  { name:"Raphyx", img:"https://yt3.googleusercontent.com/B5FRKXfknwJDa6-EGmlTXNfPxGqYmwkzxtx2QA-WS1h1nsPilP_cAoytf5igdR-dTQJy70dENw=s160-c-k-c0x00ffffff-no-rj" },
-  { name:"Dois Bits", img:"https://yt3.googleusercontent.com/mc1ZxJvl6mV3AD335KN8keeqLhsjCunusJGm5DDPaTsbSbDAJ93tc8nQT6BsNJJecaqlNvq7=s160-c-k-c0x00ffffff-no-rj" },
-  { name:"redznx", img:"https://yt3.googleusercontent.com/M4TZoYLffr4MOZbmR1-sUq9OLYjf7lKBtFlkrSCBVXHZ_0j3esUgwNawA3vZFYuLmd4TT0G6=s160-c-k-c0x00ffffff-no-rj" },
-  { name:"Raphyx", img:"https://yt3.googleusercontent.com/B5FRKXfknwJDa6-EGmlTXNfPxGqYmwkzxtx2QA-WS1h1nsPilP_cAoytf5igdR-dTQJy70dENw=s160-c-k-c0x00ffffff-no-rj" },
+  { name:"Zacton", img:"https://yt3.googleusercontent.com/8PSdR1ZzmBKKiYWoUxRj0Gd0TcfwBErOLV2rjuWPcBQ9UIKgdLQsL9SKLxebRpQxxm2khf4saQ=s160-c-k-c0x00ffffff-no-rj" },
   // ADICIONE NOVOS CLIENTES AQUI ↓
   // { name:"Cliente G", img:"https://link-da-foto.jpg" },
 ];
 
 // -------------------- 3) MELHORES TRABALHOS --------------------
-// "tag" é a etiqueta pequena (ex: categoria/cliente), "title" é o
-// nome do vídeo, "thumb" é a imagem de capa, "embedId"/"embedType"
-// controlam o player ao clicar.
 const BEST_WORKS = [
   {
     tag:"Comentando sobre",
@@ -776,16 +818,16 @@ const BEST_WORKS = [
     embedType:"youtube", embedId:"", url:"https://youtu.be/uUE58QmCpLU?si=Rt0cMtRMWGApHGyh"
   },
   {
+    tag:"Roblox infantil",
+    title:"GANHEI PODERES DE ADMIN PROIBIDOS NO ROUBE UM OVO",
+    thumb:"https://img.youtube.com/vi/_X7k3KfxwbI/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/_X7k3KfxwbI?si=gAn02pc6Msd9HCgw"
+  },
+  {
     tag:"Gameplay humorada",
     title:"ZERANDO PEAK EM 2026 KKKKKKKKK... tentando pelo menos",
     thumb:"https://img.youtube.com/vi/WFxN7FDRzTY/maxresdefault.jpg",
     embedType:"youtube", embedId:"", url:"https://youtu.be/WFxN7FDRzTY?si=JiGj6Py9x2qz_9pQ"
-  },
-   {
-    tag:"Gameplay humorada com terror 2",
-    title:"Rematch em 2026 ainda é bom kkkkkkkkk",
-    thumb:"https://img.youtube.com/vi/NRgFc1h0dYY/maxresdefault.jpg",
-    embedType:"youtube", embedId:"", url:"https://youtu.be/NRgFc1h0dYY?si=lAadRILdBBn8v8gV"
   },
   // ADICIONE NOVOS TRABALHOS AQUI ↓
   // { tag:"Categoria", title:"Nome do vídeo", thumb:"link-da-capa.jpg",
@@ -794,13 +836,22 @@ const BEST_WORKS = [
 
 // -------------------- 4a) VÍDEOS LONGOS --------------------
 const LONG_VIDEOS = [
- 
-{
+  {
+    title:"CHEGAMOS NO NOVO FINAL DE PEAK!!",
+    thumb:"https://img.youtube.com/vi/NoboDYEAz0s/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/NoboDYEAz0s?si=hHwg7jNn0btRpr4G"
+  },
+  {
+    title:"Rematch em 2026 ainda é bom kkkkkkkkk",
+    thumb:"https://img.youtube.com/vi/NRgFc1h0dYY/maxresdefault.jpg",
+    embedType:"youtube", embedId:"", url:"https://youtu.be/NRgFc1h0dYY?si=lAadRILdBBn8v8gV"
+  },
+  {
     title:"O jogo MAIS PERTURBADOR que eu já joguei",
     thumb:"https://img.youtube.com/vi/MWDRFK3fBqY/maxresdefault.jpg",
     embedType:"youtube", embedId:"", url:"https://youtu.be/MWDRFK3fBqY?si=22_-loP-mc5AkDJM"
   },
-   {
+  {
     title:"testando um jogo de terror duvidoso... | Os PEORIS jogus da Stim #2",
     thumb:"https://img.youtube.com/vi/hXb0NMn2VtQ/maxresdefault.jpg",
     embedType:"youtube", embedId:"", url:"https://youtu.be/hXb0NMn2VtQ?si=1W8PqIVGx0nb_OzU"
@@ -810,11 +861,7 @@ const LONG_VIDEOS = [
     thumb:"https://img.youtube.com/vi/axVKZN0t-Fg/maxresdefault.jpg",
     embedType:"youtube", embedId:"", url:"https://youtu.be/axVKZN0t-Fg?si=Dn2LvU6Zl-Cg6pCB"
   },
-  {
-    title:"CHEGAMOS NO NOVO FINAL DE PEAK!!",
-    thumb:"https://img.youtube.com/vi/NoboDYEAz0s/maxresdefault.jpg",
-    embedType:"youtube", embedId:"", url:"https://youtu.be/NoboDYEAz0s?si=hHwg7jNn0btRpr4G"
-  },
+  
   // ADICIONE NOVOS VÍDEOS LONGOS AQUI ↓
   // { title:"Nome do vídeo", thumb:"link-da-capa.jpg",
   //   embedType:"youtube", embedId:"IDdoVideo", url:"" },
@@ -822,11 +869,11 @@ const LONG_VIDEOS = [
 
 // -------------------- 4b) SHORTS --------------------
 const SHORTS = [
-  { title:"Corte viral #1", thumb:"https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
-  { title:"Bastidores", thumb:"https://images.unsplash.com/photo-1598550476439-6847785fcea6?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
-  { title:"Transição rápida", thumb:"https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
-  { title:"Trend áudio", thumb:"https://images.unsplash.com/photo-1554080353-a576cf803bda?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
-  { title:"Making of", thumb:"https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=500", embedType:"youtube", embedId:"dQw4w9WgXcQ", url:"" },
+  { title:"3 BUGS MAIS ABSURDOS DO ROBLOX", thumb:"https://i.ytimg.com/vi/ZhGGwbMH-iY/sardefault.jpg?sqp=-oaymwEoCJUDENAFSFqQAgHyq4qpAxcIARUAAIhC2AEB4gEKCBgQAhgGOAFAAQ==&rs=AOn4CLA2M7ZmWZUUcV9-Y4Zb1s8iqS2q_A", embedType:"youtube", embedId:"", url:"https://youtube.com/shorts/ZhGGwbMH-iY?si=uoRa_cwYYvlVjR5z" },
+  { title:"Bastidores", thumb:"https://images.unsplash.com/photo-1598550476439-6847785fcea6?q=80&w=500", embedType:"youtube", embedId:"", url:"" },
+  { title:"Transição rápida", thumb:"https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?q=80&w=500", embedType:"youtube", embedId:"", url:"" },
+  { title:"Trend áudio", thumb:"https://images.unsplash.com/photo-1554080353-a576cf803bda?q=80&w=500", embedType:"youtube", embedId:"", url:"" },
+  { title:"Making of", thumb:"https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=500", embedType:"youtube", embedId:"", url:"" },
   // ADICIONE NOVOS SHORTS AQUI ↓
   // { title:"Nome do short", thumb:"link-da-capa.jpg",
   //   embedType:"youtube", embedId:"IDdoVideo", url:"" },
@@ -838,11 +885,6 @@ const SHORTS = [
    ================================================================ */
 
 // ---- Clientes (marquee) ----
-// Rola infinitamente não importa quantos clientes você adicionar na
-// lista CLIENTS lá em cima: o script mede a largura real do conteúdo
-// e duplica quantas vezes forem necessárias para nunca sobrar espaço
-// vazio no loop. A velocidade (PIXELS_POR_SEGUNDO) fica sempre igual,
-// então adicionar mais clientes deixa a fita mais longa, não mais rápida.
 const marqueeTrack = document.getElementById('marqueeTrack');
 const PIXELS_POR_SEGUNDO = 55;
 
@@ -856,18 +898,14 @@ function clientItemHTML(c){
 }
 
 function renderClients(){
-  // 1) desenha um conjunto único primeiro, só para medir a largura
   marqueeTrack.innerHTML = CLIENTS.map(clientItemHTML).join('');
   const singleSetWidth = marqueeTrack.scrollWidth;
   const viewportWidth = marqueeTrack.parentElement.clientWidth;
 
-  // 2) duplica o conjunto até ter pelo menos 2x a largura da tela
-  //    (garante que nunca aparece espaço vazio, mesmo com poucos clientes)
   const timesNeeded = Math.max(2, Math.ceil((viewportWidth * 2) / singleSetWidth));
   const fullList = Array.from({ length: timesNeeded }, () => CLIENTS).flat();
   marqueeTrack.innerHTML = fullList.map(clientItemHTML).join('');
 
-  // 3) a animação sempre anda 1/N do trilho (uma "volta" de conteúdo original)
   const totalWidth = marqueeTrack.scrollWidth;
   marqueeTrack.style.setProperty('--marquee-distance', `${totalWidth / timesNeeded}px`);
   marqueeTrack.style.animationDuration = `${(totalWidth / timesNeeded) / PIXELS_POR_SEGUNDO}s`;
